@@ -82,9 +82,10 @@ def extract_inbound(model: Model):
             })
             try:
                 price = shipment.selectedQuote.amount
-                weight = shipment.items[0].weight
+                weight = shipment.equipment.weight
+                weightUOM  = shipment.equipment.weightUOM
                 cost_per_lb = round(price / weight, 2)
-                message = f"PO {ponum} | Price: {price} | Weight: {weight} | Cost per lb: ${cost_per_lb}"
+                message = f"PO {ponum} | Price: {price} | Weight: {weight}{weightUOM} | Cost per lb: ${cost_per_lb}"
                 write_to_slack(message)
                 print(message)
             except AttributeError:
@@ -128,9 +129,10 @@ def extract_outbound(model: Model):
             })
             try:
                 price = shipment.selectedQuote.amount
-                weight = shipment.items[0].weight
+                weight = shipment.equipment.weight
+                weightUOM = shipment.equipment.weightUOM
                 cost_per_lb = round(price / weight, 2)
-                message = f"Customer {consignor} | Price: {price} | Weight: {weight} | Cost per lb: ${cost_per_lb}"
+                message = f"Customer {consignor} | Price: {price} | Weight: {weight}{weightUOM} | Cost per lb: ${cost_per_lb}"
                 write_to_slack(message)
                 print(message)
             except AttributeError:

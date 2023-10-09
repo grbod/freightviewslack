@@ -61,7 +61,7 @@ class Equipment(BaseModel):
 #     accessorials: List
 #     description: str
     weight: int
-#     weightUOM: str
+    weightUOM: str
 #     isHazardous: bool
 
 
@@ -72,7 +72,7 @@ class Equipment(BaseModel):
 #     quantity: int
 
 
-class Item(BaseModel):
+# class Item(BaseModel):
     # declaredValueCurrency: str
     # freightClass: int
     # height: int
@@ -81,7 +81,7 @@ class Item(BaseModel):
     # width: int
     # pickupLocationSequence: int
     # dropLocationSequence: int
-    weight: int | None = None
+    # weight: int | None = None
     # weightUOM: str
     # description: str
     # type: str
@@ -160,10 +160,10 @@ class Shipment(BaseModel):
     status: str
     locations: List[Location]
     # billTo: BillTo
-    # equipment: Equipment
+    equipment: Equipment
     # isLiveLoad: bool
     # isArchived: bool
-    items: List[Item]
+    # items: List[Item]
     direction: str
     refNums: List
     selectedQuote: SelectedQuote
