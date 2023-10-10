@@ -1,4 +1,4 @@
-from os import PRIO_PROCESS, write
+# from os import PRIO_PROCESS, write
 import requests
 import config
 from slack_sdk import WebClient
@@ -143,6 +143,24 @@ def extract_outbound(model: Model):
     table_data = tabulate(table_data, headers="keys", tablefmt="heavy_outline")
     return table_data 
 
+def other_sched_pickups(headers):
+    url = "https://api.freightview.com/v2.0/shipments?status=pending&status=awarded"
+    print(url)
+    response = requests.get(url, headers=headers)
+    data = response.json()
+    try:
+        model = Model.model_validate(data)
+        table_data = []
+        # iternate through model object, printing the shipmentID
+        for shipment in model.shipments:
+            print(shipment.status)
+            print("hi")
+    except:
+        print("fail")
+        pass
+
+
+
 
 def main(): 
     #check if the API request was successful 
@@ -151,13 +169,12 @@ def main():
     url = "https://api.freightview.com/v2.0/shipments?status=picked-up" 
     response = requests.get(url, headers=headers) 
     data = response.json() 
-    model = Model.model_validate(data)     
     try:
         model = Model.model_validate(data) 
-        inbound_table = extract_inbound(model)
-        post_to_slack("INBOUND FREIGHT",inbound_table)
-        outbound_table = extract_outbound(model)
-        post_to_slack("OUTBOUND FREIGHT",outbound_table)
+        # inbound_table = extract_inbound(model)
+        # post_to_slack("INBOUND FREIGHT",inbound_table)
+        # outbound_table = extract_outbound(model)
+        # post_to_slack("OUTBOUND FREIGHT",outbound_table)
     except ValidationError as e:
         error_details = e.errors()
         error_summary = "\n".join([
@@ -167,6 +184,9 @@ def main():
         print(error_summary)
         logger.error("Pydantic validation error details:\n%s", error_summary)
         logger.exception("Full traceback:")
+
+    # GET PENDING & AWARDED TO SEE IF MAYBE SOMETHING MISSED PICK-UP
+    other_sched_pickups(headers) 
 
     # # GET PENDING UP API REQUEST
     # url = "https://api.freightview.com/v2.0/shipments?status=confirmed"
